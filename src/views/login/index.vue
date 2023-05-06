@@ -1,28 +1,60 @@
 <template lang="">
   <div class="login-container">
-    <el-form ref="formRef" :model="form" class="login-form">
+    <el-form ref="formRef" :model="form" class="login-form" :rules="rules">
       <div class="title-container">
         <h3 class="title">用户登录</h3>
       </div>
-      <el-form-item>
+      <el-form-item prop="username">
         <svg-icon icon="user" class="svg-container"></svg-icon>
-        <el-input v-model="form.name" />
+        <el-input v-model="form.username" />
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="password">
         <svg-icon icon="password" class="svg-container"></svg-icon>
-        <el-input v-model="form.password" />
+        <el-input v-model="form.password" :type="passwordType" />
+        <svg-icon :icon="passwordType ==='password' ? 'eye' : 'eye-open'" calss="svg-container" @click="changeType"></svg-icon>
       </el-form-item>
-      <el-button type="primary" class="login-button">登录</el-button>
+      <el-button type="primary" class="login-button" @click="handleLogin">
+        登录
+      </el-button>
     </el-form>
   </div>
 </template>
 <script setup>
 import { ref } from 'vue'
 import { Edit } from '@element-plus/icons-vue'
+import { login } from '@/api/login'
 const form = ref({
-  name: '',
+  username: '',
   password: ''
 })
+const rules = ref({
+  name: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+  ]
+})
+const formRef = ref(null)
+const handleLogin = () => {
+  formRef.value.validate(async (valid) => {
+    if (valid) {
+      const res = await login(form.value)
+      console.log(res)
+    } else {
+      console.log('error submit!!')
+      return false
+    }
+  })
+}
+const passwordType = ref('password')
+const changeType = () => {
+  if (passwordType.value === 'password') {
+    passwordType.value = 'text'
+  } else {
+    passwordType.value = 'password'
+  }
+}
 </script>
 <style lang="scss" scoped>
 $bg: #2d3a4b;

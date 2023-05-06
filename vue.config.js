@@ -57,9 +57,7 @@ module.exports = {
       .end()
     config
       .plugin('ignore')
-      .use(
-        new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn$/)
-      )
+      .use(new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn$/))
     config.module
       .rule('icons')
       .test(/\.svg$/)
@@ -71,5 +69,17 @@ module.exports = {
         symbolId: 'icon-[name]'
       })
       .end()
+  },
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'https://www.fastmock.site/mock/63007c1a70783ad1efdf276be6df23b6/shop',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
   }
 }
